@@ -1,181 +1,543 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Human Life Value Calculator</title>
+
+    <title>Life Cover Calculator | ICICI Prudential Life Insurance</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
             margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+
+            /* ICICI Prudential inspired background */
+            background: linear-gradient(
+                135deg,
+                #f7f7f7 0%,
+                #ffffff 55%,
+                #fff3ed 100%
+            );
+
+            min-height: 100vh;
             padding: 40px 20px;
+            color: #333;
         }
 
-        .container {
-            max-width: 500px;
+        /* Main Card */
+        .calculator {
+            max-width: 560px;
             margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
-        h1 {
-            text-align: center;
-            color: #222;
+        /* Header */
+        .header {
+            background: linear-gradient(
+                100deg,
+                #e85b24,
+                #f58220
+            );
+
+            padding: 25px 30px;
+            color: white;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        /*
+           Replace this box with the official
+           ICICI Prudential logo asset if authorized.
+        */
+        .logo {
+            background: white;
+            color: #e65322;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 17px;
+            line-height: 1.1;
+        }
+
+        .logo small {
+            display: block;
+            color: #174a7e;
+            font-size: 9px;
+            margin-top: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            font-size: 15px;
+            opacity: 0.95;
+        }
+
+        /* Form area */
+        .form-area {
+            padding: 30px;
+        }
+
+        .info-box {
+            background: #f4f8fc;
+            border-left: 4px solid #174a7e;
+            padding: 14px 16px;
             margin-bottom: 25px;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
         label {
             display: block;
-            margin-top: 15px;
-            margin-bottom: 6px;
             font-weight: bold;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            color: #333;
         }
 
         input {
             width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            padding: 14px;
+            border: 1px solid #d2d2d2;
+            border-radius: 7px;
             font-size: 16px;
+            transition: 0.2s;
         }
 
-        button {
+        input:focus {
+            outline: none;
+            border-color: #174a7e;
+            box-shadow: 0 0 0 3px rgba(23, 74, 126, 0.1);
+        }
+
+        /* Calculate button */
+        .calculate-btn {
             width: 100%;
-            margin-top: 25px;
-            padding: 13px;
+            margin-top: 28px;
+            padding: 15px;
+
             border: none;
-            border-radius: 6px;
-            background: #007bff;
+            border-radius: 7px;
+
+            background: #174a7e;
             color: white;
+
             font-size: 17px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #0056b3;
-        }
-
-        .result {
-            margin-top: 25px;
-            padding: 20px;
-            background: #eef7ff;
-            border-radius: 8px;
-            text-align: center;
-            display: none;
-        }
-
-        .result h2 {
-            margin: 0 0 10px;
-        }
-
-        .amount {
-            font-size: 28px;
             font-weight: bold;
-            color: #007bff;
+
+            cursor: pointer;
+            transition: 0.2s;
         }
 
+        .calculate-btn:hover {
+            background: #10385e;
+        }
+
+        /* Error */
         .error {
-            color: red;
-            margin-top: 15px;
+            color: #c62828;
             text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        /* Result */
+        .result {
+            display: none;
+            margin-top: 28px;
+            padding: 25px;
+
+            background: linear-gradient(
+                135deg,
+                #fff7f1,
+                #ffffff
+            );
+
+            border: 1px solid #f2c5ad;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .life-cover {
+            font-size: 36px;
+            font-weight: bold;
+            color: #e65322;
+            margin: 8px 0 20px;
+        }
+
+        .result-note {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 18px;
+        }
+
+        .breakdown {
+            text-align: left;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .breakdown-row strong {
+            color: #333;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 18px;
+            background: #174a7e;
+            color: white;
+            font-size: 12px;
+        }
+
+        .footer span {
+            color: #ff9b65;
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .header,
+            .form-area {
+                padding: 22px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .life-cover {
+                font-size: 30px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="calculator">
 
-    <h1>Human Life Value Calculator</h1>
+    <!-- HEADER -->
+    <div class="header">
 
-    <label for="income">Annual Income (₹)</label>
-    <input type="number" id="income" placeholder="e.g. 600000">
+        <div class="logo-area">
 
-    <label for="expenses">Annual Personal Expenses (₹)</label>
-    <input type="number" id="expenses" placeholder="e.g. 150000">
+            <!--
+                Replace this text logo with the official
+                authorized ICICI Prudential logo image.
+            -->
 
-    <label for="years">Years of Working Life Remaining</label>
-    <input type="number" id="years" placeholder="e.g. 25">
+            <div class="logo">
+                ICICI PRUDENTIAL
+                <small>LIFE INSURANCE</small>
+            </div>
 
-    <label for="rate">Expected Investment Return (%)</label>
-    <input type="number" id="rate" value="8" step="0.1">
+        </div>
 
-    <button onclick="calculateHLV()">Calculate HLV</button>
+        <h1>Life Cover Calculator</h1>
 
-    <div class="result" id="result">
-        <h2>Estimated Human Life Value</h2>
-        <div class="amount" id="hlv"></div>
+        <p>
+            Calculate your estimated life cover requirement
+            based on your income and working years.
+        </p>
+
     </div>
 
-    <div class="error" id="error"></div>
+
+    <!-- FORM -->
+    <div class="form-area">
+
+        <div class="info-box">
+            Enter your annual income, personal expenses and
+            remaining working years to estimate the life cover
+            amount required to protect your family's future.
+        </div>
+
+
+        <label for="income">
+            Annual Income (₹)
+        </label>
+
+        <input
+            type="number"
+            id="income"
+            placeholder="Example: 600000"
+            min="0"
+        >
+
+
+        <label for="expenses">
+            Annual Personal Expenses (₹)
+        </label>
+
+        <input
+            type="number"
+            id="expenses"
+            placeholder="Example: 150000"
+            min="0"
+        >
+
+
+        <label for="years">
+            Remaining Working Years
+        </label>
+
+        <input
+            type="number"
+            id="years"
+            placeholder="Example: 25"
+            min="1"
+        >
+
+
+        <button
+            class="calculate-btn"
+            onclick="calculateLifeCover()"
+        >
+            Calculate Life Cover
+        </button>
+
+
+        <div
+            class="error"
+            id="error"
+        ></div>
+
+
+        <!-- RESULT -->
+        <div
+            class="result"
+            id="result"
+        >
+
+            <div class="result-title">
+                Recommended Life Cover Amount
+            </div>
+
+            <div
+                class="life-cover"
+                id="lifeCoverAmount"
+            >
+                ₹0
+            </div>
+
+            <div class="result-note">
+                Estimated based on the income contribution
+                over the remaining working years.
+            </div>
+
+
+            <div class="breakdown">
+
+                <div class="breakdown-row">
+                    <span>Annual Income</span>
+                    <strong id="showIncome"></strong>
+                </div>
+
+                <div class="breakdown-row">
+                    <span>Annual Personal Expenses</span>
+                    <strong id="showExpenses"></strong>
+                </div>
+
+                <div class="breakdown-row">
+                    <span>Annual Family Contribution</span>
+                    <strong id="showContribution"></strong>
+                </div>
+
+                <div class="breakdown-row">
+                    <span>Remaining Working Years</span>
+                    <strong id="showYears"></strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Life Cover Calculator
+        <br>
+        <span>ICICI Prudential Life Insurance</span>
+    </div>
 
 </div>
 
+
 <script>
-function calculateHLV() {
 
-    const income = parseFloat(document.getElementById("income").value);
-    const expenses = parseFloat(document.getElementById("expenses").value);
-    const years = parseFloat(document.getElementById("years").value);
-    const rate = parseFloat(document.getElementById("rate").value);
+function formatRupees(amount) {
 
-    const result = document.getElementById("result");
-    const error = document.getElementById("error");
+    return "₹" + amount.toLocaleString("en-IN", {
+        maximumFractionDigits: 0
+    });
+
+}
+
+
+function calculateLifeCover() {
+
+    const income =
+        parseFloat(
+            document.getElementById("income").value
+        );
+
+    const expenses =
+        parseFloat(
+            document.getElementById("expenses").value
+        );
+
+    const years =
+        parseFloat(
+            document.getElementById("years").value
+        );
+
+
+    const error =
+        document.getElementById("error");
+
+    const result =
+        document.getElementById("result");
+
 
     error.textContent = "";
+
     result.style.display = "none";
+
+
+    /* Validation */
 
     if (
         isNaN(income) ||
         isNaN(expenses) ||
-        isNaN(years) ||
-        isNaN(rate)
+        isNaN(years)
     ) {
-        error.textContent = "Please enter all values.";
-        return;
-    }
 
-    if (income <= expenses) {
         error.textContent =
-            "Annual income must be greater than annual personal expenses.";
+            "Please enter all the required values.";
+
         return;
     }
 
-    if (years <= 0 || rate < 0) {
-        error.textContent = "Please enter valid values.";
+
+    if (
+        income <= 0 ||
+        expenses < 0 ||
+        years <= 0
+    ) {
+
+        error.textContent =
+            "Please enter valid values.";
+
         return;
     }
 
-    // Annual contribution available to the family
-    const annualContribution = income - expenses;
 
-    // Convert percentage to decimal
-    const r = rate / 100;
+    if (expenses >= income) {
 
-    let hlv;
+        error.textContent =
+            "Personal expenses should be less than annual income.";
 
-    // Present Value of an annuity
-    if (r === 0) {
-        hlv = annualContribution * years;
-    } else {
-        hlv =
-            annualContribution *
-            ((1 - Math.pow(1 + r, -years)) / r);
+        return;
     }
 
-    document.getElementById("hlv").textContent =
-        "₹" + hlv.toLocaleString("en-IN", {
-            maximumFractionDigits: 0
-        });
+
+    /* Calculate annual contribution */
+
+    const annualContribution =
+        income - expenses;
+
+
+    /*
+       HLV / Life Cover Calculation
+
+       Life Cover =
+       Annual Family Contribution ×
+       Remaining Working Years
+    */
+
+    const lifeCover =
+        annualContribution * years;
+
+
+    /* Display result */
+
+    document.getElementById(
+        "lifeCoverAmount"
+    ).textContent =
+        formatRupees(lifeCover);
+
+
+    document.getElementById(
+        "showIncome"
+    ).textContent =
+        formatRupees(income);
+
+
+    document.getElementById(
+        "showExpenses"
+    ).textContent =
+        formatRupees(expenses);
+
+
+    document.getElementById(
+        "showContribution"
+    ).textContent =
+        formatRupees(annualContribution);
+
+
+    document.getElementById(
+        "showYears"
+    ).textContent =
+        years + " years";
+
 
     result.style.display = "block";
+
 }
+
 </script>
 
 </body>
 </html>
+```
