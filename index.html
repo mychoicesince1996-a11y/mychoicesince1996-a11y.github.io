@@ -1,52 +1,181 @@
 <!DOCTYPE html>
-<html lang="ta">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HLV கணக்கீட்டுக் கருவி</title>
+    <title>Human Life Value Calculator</title>
+
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .calculator-box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 400px; width: 100%; }
-        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #34495e; font-weight: bold; }
-        input { width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #27ae60; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        button:hover { background-color: #219653; }
-        .result { margin-top: 20px; padding: 15px; background-color: #e8f8f5; border-left: 5px solid #27ae60; border-radius: 3px; display: none; }
-        .result h3 { margin: 0 0 5px 0; color: #16a085; }
-        .result p { margin: 0; font-size: 18px; font-weight: bold; color: #2c3e50; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 13px;
+            border: none;
+            border-radius: 6px;
+            background: #007bff;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #eef7ff;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .result h2 {
+            margin: 0 0 10px;
+        }
+
+        .amount {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .error {
+            color: red;
+            margin-top: 15px;
+            text-align: center;
+        }
     </style>
 </head>
+
 <body>
-<div class="calculator-box">
-    <h2>HLV கணக்கீட்டுக் கருவி</h2>
-    <div class="input-group"><label for="currentAge">தற்போதைய வயது:</label><input type="number" id="currentAge" placeholder="எ.கா. 30"></div>
-    <div class="input-group"><label for="retirementAge">ஓய்வு பெறும் வயது:</label><input type="number" id="retirementAge" placeholder="எ.கா. 60"></div>
-    <div class="input-group"><label for="annualIncome">ஆண்டு வருமானம் (₹):</label><input type="number" id="annualIncome" placeholder="எ.கா. 600000"></div>
-    <div class="input-group"><label for="annualExpenses">ஆண்டு தனிப்பட்ட செலவுகள் (₹):</label><input type="number" id="annualExpenses" placeholder="எ.கா. 150000"></div>
-    <button type="button" onclick="calculateHLV()">HLV கணக்கிடு</button>
-    <div class="result" id="hlvResult">
-        <h3>உங்கள் மனித வாழ்நாள் மதிப்பு (HLV):</h3>
-        <p id="hlvValue">₹ 0</p>
-        <small style="color: #7f8c8d; display:block; margin-top:5px;">உங்களுக்குத் தேவைப்படும் தோராயமான ஆயுள் காப்பீட்டுத் தொகை இதுவாகும்.</small>
+
+<div class="container">
+
+    <h1>Human Life Value Calculator</h1>
+
+    <label for="income">Annual Income (₹)</label>
+    <input type="number" id="income" placeholder="e.g. 600000">
+
+    <label for="expenses">Annual Personal Expenses (₹)</label>
+    <input type="number" id="expenses" placeholder="e.g. 150000">
+
+    <label for="years">Years of Working Life Remaining</label>
+    <input type="number" id="years" placeholder="e.g. 25">
+
+    <label for="rate">Expected Investment Return (%)</label>
+    <input type="number" id="rate" value="8" step="0.1">
+
+    <button onclick="calculateHLV()">Calculate HLV</button>
+
+    <div class="result" id="result">
+        <h2>Estimated Human Life Value</h2>
+        <div class="amount" id="hlv"></div>
     </div>
+
+    <div class="error" id="error"></div>
+
 </div>
+
 <script>
 function calculateHLV() {
-    var currentAge = parseInt(document.getElementById('currentAge').value);
-    var retirementAge = parseInt(document.getElementById('retirementAge').value);
-    var annualIncome = parseFloat(document.getElementById('annualIncome').value);
-    var annualExpenses = parseFloat(document.getElementById('annualExpenses').value);
-    if (isNaN(currentAge)  isNaN(retirementAge)  isNaN(annualIncome) || isNaN(annualExpenses)) { alert("தயவுசெய்து அனைத்து விவரங்களையும் சரியாக நிரப்பவும்."); return; }
-    if (currentAge >= retirementAge) { alert("ஓய்வு பெறும் வயது தற்போதைய வயதை விட அதிகமாக இருக்க வேண்டும்."); return; }
-    var workingYears = retirementAge - currentAge;
-    var netAnnualContribution = annualIncome - annualExpenses;
-    var hlv = netAnnualContribution * workingYears;
-    var resultDiv = document.getElementById('hlvResult');
-    var valueP = document.getElementById('hlvValue');
-    if (hlv > 0) { valueP.innerText = "₹ " + hlv.toLocaleString('en-IN'); resultDiv.style.display = "block"; } else { alert("உங்கள் செலவுகள் வருமானத்தை விட அதிகமாக உள்ளது. கணக்கிட முடியாது."); }
+
+    const income = parseFloat(document.getElementById("income").value);
+    const expenses = parseFloat(document.getElementById("expenses").value);
+    const years = parseFloat(document.getElementById("years").value);
+    const rate = parseFloat(document.getElementById("rate").value);
+
+    const result = document.getElementById("result");
+    const error = document.getElementById("error");
+
+    error.textContent = "";
+    result.style.display = "none";
+
+    if (
+        isNaN(income) ||
+        isNaN(expenses) ||
+        isNaN(years) ||
+        isNaN(rate)
+    ) {
+        error.textContent = "Please enter all values.";
+        return;
+    }
+
+    if (income <= expenses) {
+        error.textContent =
+            "Annual income must be greater than annual personal expenses.";
+        return;
+    }
+
+    if (years <= 0 || rate < 0) {
+        error.textContent = "Please enter valid values.";
+        return;
+    }
+
+    // Annual contribution available to the family
+    const annualContribution = income - expenses;
+
+    // Convert percentage to decimal
+    const r = rate / 100;
+
+    let hlv;
+
+    // Present Value of an annuity
+    if (r === 0) {
+        hlv = annualContribution * years;
+    } else {
+        hlv =
+            annualContribution *
+            ((1 - Math.pow(1 + r, -years)) / r);
+    }
+
+    document.getElementById("hlv").textContent =
+        "₹" + hlv.toLocaleString("en-IN", {
+            maximumFractionDigits: 0
+        });
+
+    result.style.display = "block";
 }
 </script>
+
 </body>
 </html>
